@@ -4,6 +4,7 @@ import { CategoryCard } from "@/components/CategoryCard";
 import { ArticleCard } from "@/components/ArticleCard";
 import { ArticleDetail } from "@/components/ArticleDetail";
 import { Calendar, Wrench, FileText, Users, DollarSign, Phone } from "lucide-react";
+import { searchNormalized } from "@/utils/normalizeString";
 
 //todo: remove mock functionality
 const CATEGORIES = [
@@ -112,12 +113,13 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filteredArticles = ARTICLES.filter((article) => {
-    const matchesSearch = searchValue === "" || 
-      article.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchValue.toLowerCase());
-    
+    const matchesSearch = searchValue === "" ||
+      searchNormalized(article.title, searchValue) ||
+      searchNormalized(article.excerpt, searchValue) ||
+      searchNormalized(article.content, searchValue);
+
     const matchesCategory = !selectedCategory || article.category === selectedCategory;
-    
+
     return matchesSearch && matchesCategory;
   });
 
